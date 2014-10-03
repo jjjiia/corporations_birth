@@ -1,117 +1,219 @@
-<!DOCTYPE html>
+
+<!Doctype HTML>
 <html>
-  <head>
-	<title>International Companies Los Angeles</title>
-	<script src="static/javascripts/d3.v3.min.js"></script>
-	<script src="static/javascripts/topojson.v1.min.js"></script>
-	<script src="static/javascripts/jquery.min.js"></script>
-	<script src="static/javascripts/d3.tip.v0.6.3.js"></script>
-	<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
-    <script src="http://d3js.org/queue.v1.min.js"></script>
-	<script src="static/javascripts/jquery-ui.min.js"></script>
-	<link rel="stylesheet" href="static/stylesheets/jquery-ui.css" />
-	<link rel="stylesheet" href="static/bootstrap-3.1.1-dist/css/bootstrap.min.css">
-	<script src="static/javascripts/jquery-ui.min.js"></script>
-	<link href="static/bootstrap-3.1.1-dist/css/bootstrap-glyphicons.css" rel="stylesheet">
-	<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css" />
-	<link href='http://fonts.googleapis.com/css?family=EB+Garamond' rel='stylesheet' type='text/css'>
-
-	<link rel="stylesheet" type="text/css" href="static/stylesheets/corporations_style.css"> </style>
-	
-      <!-- Google Analytics -->
-      <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-        ga('create', 'UA-47759411-2', 'youarehere.cc');
-        ga('send', 'pageview');
-
-      </script>
-</head>
-
-<body>
-	
-	<div id="containers">
-		<div id="svg-nyc-map"></div>
-		<div id="svg-world-map"></div>
-		<div id="svg-timeline"></div>
-	</div>
-	
-	<div id = "header">
-		<div id = "logo">
-			<a id="logo" href="http://youarehere.cc"><img src="static/images/logo.jpg" style="width: 60px"></a>
-		</div>
-		<div id = "title-text">
-			<div id = "title">Los Angeles</div>
-	  <div id = "subtitle">This map visualizes the 3269 foreign companies registered in Los Angeles between 1889 and 2013<a id="showMore" href="#"> ... more </a></div>
-		</div>
-	</div>
-	
-	
-	<div id = "axisLabels">
-		<div id = "axisYear">Year</div>
-		<div id = "axisCompanies"># Companies</div>
-	</div>
-	<div id="timeline-controls">
-		<p class="play">Play</p>
-		<p class="stop">Stop</p>
-	</div>
-	
-	<div id = "selectionDetails">
-		<div id = "currentSelection"></div>
-		<div id = "seeCompanyList"></div>
-	</div>
-	
-	<div id = "specialCountries"></div>
-	
-	<div id = "footer">
-		<div id ="credit">This work is part of the <a href="http://youarehere.cc">You Are Here</a> project +
-	        <a href="http://socialcomputing.media.mit.edu"> The Social Computing Group </a>+
-	        <a href="http://media.mit.edu"target = "blank"> MIT Media Lab </a> + <a href="http://mit.edu" target = "blank"> MIT</a>
-		</div>
-		<div id = "feedback">
-			<a href="http://youarehere.cc/#/report" target = "blank">Feedback</a> | <a href="http://youarehere.cc/#/faq" target = "blank">FAQ</a>
-		</div>
-		<div class="spacer"></div>
-	</div>
-	<script type="text/javascript" charset="utf-8">
-	var csv = "data/processed/losAngeles.csv"
-	var cityGeojson = "data/processed/losAngeles-zip-codes.geojson"
-	</script>
-	<div id = "resetAll">Reset</div>
-	
-	
-	
+	<head>
+		<title> Graffiti in Manhattan, New York </title>
+		<!---   Styles   -->
+		<link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+		<link href="static/bootstrap-select/bootstrap-select.css" rel="stylesheet"/>
+		<!-- <link href='http://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'> -->
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
+		<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 		
-		<div id="essayBox2">
-			<div id='essayBox-close2' class="glyphicon glyphicon-remove"></div>
-			<div id = "companyList"></div>
-		</div>
-	
-    
-		<div id="essayBox">
-			<div id='essayBox-close' class="glyphicon glyphicon-remove"></div>
-			<div id='essayContent'>
-				<br/><br/>
-				<p>This map visualizes the quantity, chronology, and geographical concentration of new foreign corporate entities in Los Angeles throughout history. It is intended to show how the international businesses is situated in Los Angeles's zip codes and how Los Angeles based companies are distributed across the world.
-	</p>
+<link rel="stylesheet" href="static/css/histograms.css" />
+<link href='http://fonts.googleapis.com/css?family=EB+Garamond' rel='stylesheet' type='text/css'/>
+<link href="static/css/graffiti.css" rel='stylesheet' type='text/css'/>
+
+		<!---   Scripts    -->
+		<script src="static/libs/d3.v3.min.js"></script>
+		<script src="static/libs/jquery.min.js"></script>
+		<script src="static/libs/d3.tip.js"></script>
+		<script src="static/bootstrap/js/bootstrap.min.js"></script>
+		<script src="static/bootstrap-select/bootstrap-select.js"></script>
+		<script src="static/js/d3-utils.js"></script>
+		<script src="static/libs/jquery.scrollIntoView.min.js"></script>
+		<script>
+		var BASE_URL = ''; 
+		
+		function loadAppropriateFonts() {
+			if (navigator.platform.toLowerCase().indexOf('mac') == -1) {
+				$('body, h1, h2, h3, h4, h5').css('font-family', "'Open Sans', sans-serif");
+			}
+		}
+		$(function(){
+		  if (/embed/i.test(window.location.search)){
+		    $('body').addClass('embedded');
+		    var showOriginal = $(document.createElement('a'));
+		    showOriginal.attr('target', 'new');
+		    showOriginal.attr('href', window.location.href.replace(window.location.search, '?more=1'));
+		    showOriginal.html('... more');
+		    showOriginal.attr('id', 'showOriginal');
+		    $('#showMore').replaceWith(showOriginal);
+		  }
+		  if (/more/i.test(window.location.search)){
+		    setTimeout(function(){$('#showMore').click();},1000);
+		  }
+		});
+		</script>
+
+		<style type="text/css">
+		  .embedded {
+		    overflow: hidden;
+		  }
+		  .embedded .navElements {
+		    display: none;
+		  }
+		  .embedded #footer {
+		    display: none;
+		  }
+		  #showOriginal { color: #DE1028 }
+		  .embedded .title-container {
+		    margin-top: 0;
+		  }
+		  .title-logo {
+		    display: none;
+		    float: left;
+		    width: 40px;
+		    height: 40px;
+		    margin-right: 5px;
+		  }
+		  .title-logo img { width: 100%; height: 100% }
+		  .embedded .title-logo {
+		    display: block;
+		  }
+		  .embedded > .container {
+		    margin-bottom: 0;
+		  }
+		  .embedded .title {
+		    font-size: 18px !important;
+		  }
+		  .embedded .subtitle {
+		    font-size: 12px !important;
+		  }
+		</style>
+
+		<!-- Google Analytics -->
+		<script>
+		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+		  ga('create', 'UA-47759411-2', 'youarehere.cc');
+		  ga('send', 'pageview');
+
+		</script>
+		
+<script src="static/libs/topojson.v1.min.js"></script>
+<script src="static/libs/queue.v1.min.js"></script>
+<script src="static/libs/d3.geo.tile.v0.min.js"></script>
+
+	</head>
+	<body>
+		
+<div class="container">
+	<div class="title-container">
+		<a id="logo" href="http://youarehere.cc">
+			<img src="static/img/logo.jpg" style="width: 50px">
+		</a>
+		<div class="title-text">
+				<a href="http://youarehere.cc/#/maps/by-city/cambridge" id="mapClass">
+					<h3 class="title" style="font-size: 36px; color:#545454"> Manhattan </h3>
+				</a> 
 			
-				 	<p>We are interested in different forces that shape both the realities and the perceptions of neighborhoods in a city. The identity of neighborhoods, particularly in Los Angeles, are greatly influenced by the mixture of different nationalities. This diversity is made partly visible at the street level by businesses catering to or offering services from particular countries.
-	 </p>
-					
-						<p>	The world heatmap showing the quantity of registrations confirm that english speaking countries such as Canada and United Kingdom are among the jurisdictions that have most companies registered in Los Angeles. However there are also a few surprises.
-					 </p>
-				
-					<p>
-					 The records for Los Angeles are taken from a larger set that includes the entire state of California. We sourced the dataset for this visualization from <a href="http://enigma.io/" target = "blank">Enigma.io</a>.
-					</p>
+			<div class="subtitle">
+				This map visualizes one year of graffiti reports in Manhattan, NY
+				<a id="showMore" href="#"> ... more </a>
 			</div>
 		</div>
-	
-	
-	  <script src="losAngeles.js"></script>
+		<div class="spacer"></div>
+</div>
+	<div id="graphContainer">
+	<div class="graph-title">
+		<h4>Over Time</h4>
+		<a id="playButton" href="#"> <i class="fa fa-play"></i> Play Animation </a>
+	</div>
+	<a id="showYear" href="#"> Show All Incidents </a>
+</div>
+<div id="content">
+	<div id="mapContainer">
+    <i class="fa fa-spinner fa-spin"></i>
+	</div>
+</div>
+<div id="neighborhoodsGraphContainer">
+	<h4 class="graph-title" style="margin-top: 15px">By Neighborhood</h5>
+</div>
 
-    </body>
+	<div id="essayBox">
+	    <div id="essayBox-close" class="glyphicon glyphicon-remove"></div>
+		<div id="essayContent">
+	<blockquote>
+	  <p>"Art should comfort the disturbed and disturb the comfortable."</p>
+	  <footer> Banksy </footer>
+	</blockquote>
+                                    
+	<p>This map shows a full year of reported graffiti incidents in the city.</p>
+
+	<p>Graffiti is part of the urban fabric of the city. Ranging from simple scribbles to intricate artwork, graffiti is often visible from the public realm and in some places dominates a city's street scenery. While there are hundreds of thousands of reported cases annually, each city presents distinct patterns of distribution of these over time and space.</p>
+
+	<p>This map visualizes the surfaces that tend to be scribbled, sprayed, painted, stenciled, tagged and noticed enough to be reported. It can't tell us the collective stories behind the writings on our city walls but it can portray where people use graffiti as as medium for communication and memory. </p>
+
+	<p>The data visualized in this map is obtained from 311 service requests for graffiti removals reported to the city in 2013. The upper graph shows the number of reported graffiti removal requests each month. Initially, all incidents from 2013 are shown together on the map. To visualize the reported incidents month by month one can click the "Play Animation" button, or click on the circle above the desired month. If a block is reported over 3 or more different months during the year, then the corresponding dots are colored red, denoting frequently graffitied areas. The bar chart below the map shows graffiti counts in each neighborhood in the city.</p>
+
+	<p>The tagging of places suggests a distinct need we have as humans to put our mark on the world.  The reporting of them suggests a separate need of business owners to not have their property painted on.  We might find that addressing this first need will help to address the second.  These maps might suggest places where cities can work to give voices to those without a voice, to create vibrant public spaces for democratized community art, and to explore non-market systems where advertisers don't have a monopoly on street communication.  We believe that seeing street art as a need rather than a nuisance, both for its viewers and its creators, could lead to more beautiful cities and a more empowered populace. </p>
+
+	<p>On the other hand, of course, we recognize that some of it is best to be washed off.</p>   
+	
+	<div class="footnote">The Banksy quote above is an adaptation of the title of a 1997 poem by Cesar Cruz, which itself is an adaptation of a quote by the 19th-century journalist Finley Dunne about the power of newspapers. </div>
+	
+</div>
+ 		<h4> Data Sources </h4>
+ 		<ol>
+ 			<li> Addresses, current status, and coordinates of requests to clean graffiti (other than bridges or highways) received from the public and SCOUT in the last 12 months. New York City Open Data.  <a target="_blank" href="https://data.cityofnewyork.us/Social-Services/Graffiti-Locations/2j99-6h29">https://data.cityofnewyork.us/Social-Services/Graffiti-Locations/2j99-6h29</a></li>
+			<li> New York City Neighborhood Boundaries. New York City Open Data. <a target="_blank" href="https://data.cityofnewyork.us/City-Government/Neighborhood-Tabulation-Areas/cpf4-rkhq">https://data.cityofnewyork.us/City-Government/Neighborhood-Tabulation-Areas/cpf4-rkhq</a></li>
+ 		</ol>
+		<a id="viewMap" href="#" style="margin-top: 40px; display: block;"> View Map</a>
+	</div>
+	
+	<div id="footer">
+	<div class="pull-left">
+		
+		This work is part of the <a href="/">You Are Here</a> project 
+		<span class="footer-plus">+</span>
+		<a href="http://socialcomputing.media.mit.edu"> The Social Computing Group </a>
+		<span class="footer-plus">+</span>
+		<a href="http://media.mit.edu"> MIT Media Lab </a>
+		<span class="footer-plus">+</span>
+		<a href="http://www.mit.edu">Massachusetts Institute of Technology</a>
+	</div>
+	<div class="pull-right">
+		<a href="/#/report"> Report an Issue <i class="fa fa-comment-o"></i></a>
+		<span class="footer-plus">|</span>
+		<script type="text/javascript">
+		  function embedMe(){
+		    // We subtracting 48px from the height to
+		    // approximately account for embed mode not having
+		    // a footer and having a smaller title.
+		    var params = {
+		      map: window.location.href,
+		      width: $('body > .container').outerWidth(),
+		      height: $('body > .container').outerHeight() - 48
+		    };
+		    window.location.href = '/#/embed/'+encodeURIComponent(JSON.stringify(params));
+		  }
+		</script>
+		<a href="#" onclick="embedMe()">Embed</a>
+		<span class="footer-plus">|</span>
+		<a href="/#/faq"> FAQ </a>
+	</div>
+</div>
+
+</div>
+<script>
+var GRAFFITI_DATA_URL = BASE_URL + 'static/data/graffiti/manhattan_N_311_graffiti_2013.csv';
+var BATCH_SIZE = 1000; 
+var BATCH_INDEX = 0; 
+var ZOOM_LEVEL = (1 << 20) / 1.3; 
+var MAX_ZOOM = ZOOM_LEVEL;
+var CENTER = [-73.968995, 40.785]; 
+var DATA_KEY = "Created Date";
+var NEIGHBORHOOD_LIST_URL = BASE_URL + 'static/data/neighborhoods/manhattan.csv';
+var BOUNDARY_URL = BASE_URL + 'static/data/boundaries/manhattan.geojson';
+var NEIGHBORHOODS_URL = BASE_URL + 'static/data/neighborhoods/manhattan.geojson';
+var NEIGHBORHOODS_KEY = 'NTAName';
+
+</script>
+<script src="static/js/tiles.js"></script>
+
+	</body>
 </html>
-    
