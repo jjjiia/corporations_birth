@@ -10,8 +10,7 @@ var WIDTH = 1000;
 var HEIGHT = 600;
 var SCALE = 1.0;
 
-var POINT_SIZE = 3;
-
+var POINT_SIZE = 1;
 
 
 var places, map, points, path, projection; 
@@ -32,7 +31,7 @@ window.onload = function () {
 	map = new D3Map(mapOptions); 
 	
 	map.loadGeoJSON(function () {
-		map.svg.select('path').attr('fill', '#ededed').attr('opacity', 1.0);
+		map.svg.select('path').attr('fill', '#aaa').attr('opacity', 1.0);
 		projecton = map.projection
 		path = d3.geo.path().projection(map.projection);
 		
@@ -72,11 +71,11 @@ function setup(error, neighborhoods, data, art) {
 			if (isNaN(d.y)) console.log(d, i);
 			return d.y;
 		})
-		.attr('r', 5)
+		.attr('r', 1)
 		.attr('fill', function (d) {
 			var type = d['Request Type'].toLowerCase(); 
-			if (type.indexOf('not_offensive') >= 0) return 'purple';
-			return '#FC634E';
+			if (type.indexOf('not_offensive') >= 0) return 'blue';
+			return 'blue';
 		});
 			
 	map.svg.selectAll('.civic-art')
@@ -92,7 +91,7 @@ function setup(error, neighborhoods, data, art) {
 			return map.projection(geometry.coordinates)[1];
 		})
 		//.attr('r', 5)
-		.style('fill', '#12EFFF')
+		.style('fill', 'blue')
 		.style('opacity', 1.0)
 		.style('font-weight', 'normal')
 		.text('x');
@@ -101,7 +100,7 @@ function setup(error, neighborhoods, data, art) {
 		.data(neighborhoods.features)
 		.enter().append('path')
 		.attr('d', path)
-		.attr('stroke', 'gray')
+		.attr('stroke', 'black')
 		.attr('fill', 'white')
 		.attr('class', 'neighborhood')
 		.attr('stroke-opacity', 0.1)
@@ -142,7 +141,7 @@ function setup(error, neighborhoods, data, art) {
 				.attr('stroke', 'black');
 				
 			g.append('circle')
-				.attr('r', 3)
+				.attr('r', 1)
 				.attr('cx', pos[0])
 				.attr('cy', pos[1]);
 			

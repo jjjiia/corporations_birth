@@ -17,24 +17,30 @@ nycZips_post =["11201", "11202", "11203", "11204", "11205", "11206", "11207", "1
 locator = geopy.geocoders.GoogleV3(api_key = "AIzaSyBZnvqy9HEpG-LAQwm_AxDOegMciI9jgP4")
 #location = locator.geocode("175 5th Avenue NYC", exactly_one=True)
 #print location.longitude
-
-companies = []
+activeFile = "/Users/Jia/Documents/map_birth_death/data/nyc_companies_nodups.csv"
+finishedCompanyList = []
 #get addresses
-def geocoder(birthyearThreshold):
+def geocoder():
 	countries_geo=["BAHAMAS, THE","KOREA,SOUTH","KOREA, NORTH","UNITED KINGDOM","AFGHANISTAN","ALBANIA","ALGERIA","SAMOA","ANDORRA","ANGOLA","ANTIGUA AND BARBUDA","AZERBAIJAN","ARGENTINA","AUSTRALIA","AUSTRIA","BAHRAIN","BANGLADESH","ARMENIA","BARBADOS","BELGIUM","BERMUDA","BHUTAN","BOLIVIA","BOSNIA AND HERZEGOVINA","BOTSWANA","BOUVET ISLAND","BRAZIL","BELIZE","BRITISH INDIAN OCEAN TERRITORY","SOLOMON ISLANDS","BRITISH VIRGIN ISLANDS","BRUNEI","BULGARIA","BURMA","BURUNDI","BELARUS","CAMBODIA","CAMEROON","CANADA","CAPE VERDE","CAYMAN ISLANDS","CENTRAL AFRICAN REPUBLIC","SRI LANKA","CHAD","CHILE","CHINA","TAIWAN","CHRISTMAS ISLAND","COCOS (KEELING) ISLANDS","COLOMBIA","COMOROS","MAYOTTE","COOK ISLANDS","COSTA RICA","CROATIA","CUBA","CYPRUS","CZECH REPUBLIC","BENIN","DENMARK","DOMINICA","DOMINICAN REPUBLIC","ECUADOR","EL SALVADOR","EQUATORIAL GUINEA","ETHIOPIA","ERITREA","ESTONIA","FAROE ISLANDS","FALKLAND ISLANDS (ISLAS MALVINAS)","SOUTH GEORGIA SOUTH SANDWICH ISLANDS","FIJI","FINLAND","ALAND ISLANDS","FRANCE","FRENCH GUIANA","FRENCH POLYNESIA","FRENCH SOUTHERN AND ANTARCTIC LANDS","DJIBOUTI","GABON","GEORGIA","PALESTINE","GERMANY","GHANA","GIBRALTAR","KIRIBATI","GREECE","GREENLAND","GRENADA","GUADELOUPE","GUAM","GUATEMALA","GUINEA","GUYANA","HAITI","HEARD ISLAND AND MCDONALD ISLANDS","HOLY SEE (VATICAN CITY)","HONDURAS","HONG KONG","HUNGARY","ICELAND","INDIA","INDONESIA","IRAN","IRAQ","IRELAND","ISRAEL","ITALY","COTE D'IVOIRE","JAMAICA","JAPAN","KAZAKHSTAN","JORDAN","KENYA","KUWAIT","KYRGYZSTAN","LAOS","LEBANON","LESOTHO","LATVIA","LIBERIA","LIBYA","LIECHTENSTEIN","LITHUANIA","LUXEMBOURG","MACAU","MADAGASCAR","MALAWI","MALAYSIA","MALDIVES","MALI","MALTA","MARTINIQUE","MAURITANIA","MAURITIUS","MEXICO","MONACO","MONGOLIA","MOLDOVA","MONTENEGRO","MONTSERRAT","MOROCCO","MOZAMBIQUE","OMAN","NAMIBIA","NAURU","NEPAL","NETHERLANDS","NETHERLANDS ANTILLES","ARUBA","NEW CALEDONIA","VANUATU","NEW ZEALAND","NICARAGUA","NIGER","NIGERIA","NIUE","NORFOLK ISLAND","NORWAY","NORTHERN MARIANA ISLANDS","MARSHALL ISLANDS","PALAU","PAKISTAN","PANAMA","PAPUA NEW GUINEA","PARAGUAY","PERU","PHILIPPINES","PITCAIRN ISLANDS","POLAND","PORTUGAL","GUINEA-BISSAU","TIMOR-LESTE","PUERTO RICO","QATAR","REUNION","ROMANIA","RUSSIA","RWANDA","SAINT BARTHELEMY","SAINT HELENA","SAINT KITTS AND NEVIS","ANGUILLA","SAINT LUCIA","SAINT MARTIN","SAINT PIERRE AND MIQUELON","SAINT VINCENT AND THE GRENADINES","SAN MARINO","SAO TOME AND PRINCIPE","SAUDI ARABIA","SENEGAL","SERBIA","SEYCHELLES","SIERRA LEONE","SINGAPORE","SLOVAKIA","VIETNAM","SLOVENIA","SOMALIA","SOUTH AFRICA","ZIMBABWE","SPAIN","WESTERN SAHARA","SUDAN","SURINAME","SVALBARD","SWAZILAND","SWEDEN","SWITZERLAND","SYRIA","TAJIKISTAN","THAILAND","TOGO","TOKELAU","TONGA","TRINIDAD AND TOBAGO","UNITED ARAB EMIRATES","TUNISIA","TURKEY","TURKMENISTAN","TURKS AND CAICOS ISLANDS","TUVALU","UGANDA","UKRAINE","MACEDONIA","EGYPT","UNITED KINGDOM","GUERNSEY","JERSEY","ISLE OF MAN","TANZANIA","UNITED STATES","VIRGIN ISLANDS","BURKINA FASO","URUGUAY","UZBEKISTAN","VENEZUELA","WALLIS AND FUTUNA","SAMOA","YEMEN","ZAMBIA"]
 	undefined_geo =  ['YUGOSLAVIA','CHANNEL ISLANDS','AFRICA','ALL OTHERS']
 	inactiveCount = 0
 	totalCount = 0
 	filteredCount = 0
 	inNYCCount = 0
-	with open('/Users/Jia/Documents/map_corporation_birth/data/newyork_processed_'+str(birthyearThreshold)+'.csv', 'w') as newcsvfile:
+	#with open('/Users/Jia/Documents/map_corporation_birth/data/newyork_processed_'+str(birthyearThreshold)+'.csv', 'w') as newcsvfile:
+	
+	with open(activeFile, 'a+') as newcsvfile:
 		spamwriter = csv.writer(newcsvfile)
 		spamwriter.writerow(["company","status","reason","birth","death","jurisdiction", "jurisdictionType","lat","lng"])
 
-		with open('/Users/Jia/Documents/map_corporation_birth/data/CorporationsData_Original.csv', 'rb') as csvfile:
+		with open('/Users/Jia/Documents/map_birth_death/data/CorporationsData_Original.csv', 'rb') as csvfile:
 			spamreader = csv.reader(csvfile)
-			csvfile.seek(0)
             
+			completedCompanies = get_completed()
+			print len(completedCompanies)
+			activeCount = len(completedCompanies)
+			
+			csvfile.seek(0)
 			next(spamreader, None)
 			for row in spamreader:
 				totalCount +=1
@@ -50,6 +56,7 @@ def geocoder(birthyearThreshold):
 				if status == "INACTIVE":
 					reason = row[5]
 					death = row[6]
+
 				else:
 					reason = "NA"
 					death = "NA"
@@ -57,41 +64,54 @@ def geocoder(birthyearThreshold):
 				birth = row[8]
 				address = row[9]
 				if address !="" and birth !="" and death!="":
-					birthyear = birth.split("-")[0]
-					if int(birthyear) == birthyearThreshold:
-						filteredCount +=1
-						zipcode = address.split(" ")[-1]
-						shortZipcode = zipcode.split("-")[0]
-                    
-						if shortZipcode in nycZips_geo or shortZipcode in nycZips_post:
-							inNYCCount +=1
-							if status == "INACTIVE":
-								inactiveCount +=1
+					
+					if death!="NA":
+						death = death.split("-")
+						year = death[0]
+						month = death[1]
+						day = death[2]
+						death = month+"/"+day+"/"+year
+						
+					birth = birth.split("-")
+					birthyear = birth[0]
+					birthmonth = birth[1]
+					birthday = birth[2]
+					birth = birthmonth+"/"+birthday+"/"+birthyear
+					
+					filteredCount +=1
+					zipcode = address.split(" ")[-1]
+					shortZipcode = zipcode.split("-")[0]
                 
-							success = false
-							while !success:
-								success = true
-								try:
-									location = locator.geocode(address, exactly_one=True)
-									time.sleep(.1)
-								except GeocoderServiceError
-									# Wait for a longer time		
-									# Retry this address
-									success = false
-									time.sleep(10)
-                        	
-                            
-                        	lng = location.longitude
-                        	lat = location.latitude
-                            print [company, status, reason, birth, death,jurisdiction, jurisdictionType, lat, lng]
-                        	spamwriter.writerow([company, status, reason, birth, death,jurisdiction, jurisdictionType, lat, lng])        
-
+					if shortZipcode in nycZips_geo or shortZipcode in nycZips_post:
+						inNYCCount +=1
+						if status == "INACTIVE":
+							inactiveCount +=1
+						if company not in completedCompanies:
+							activeCount +=1
+							print activeCount
+							location = locator.geocode(address, exactly_one=True)
+							lng = location.longitude
+							lat = location.latitude
+							spamwriter.writerow([company, status, zipcode,reason, birth, death,jurisdiction, jurisdictionType, lat, lng])        
+							finishedCompanyList.append(company)
+							time.sleep(1)
+							
+						
 			print birthyearThreshold, filteredCount, inNYCCount, inNYCCount*100.0/filteredCount,inactiveCount, inactiveCount*100.0/filteredCount
             
 
+def get_completed():
+	completedCompanies = []
+	
+	filename = activeFile
+	fileopen = open(filename, "r")
+	
+	for row in fileopen:
+		completedCompany = row.split(",")[0]
+		completedCompanies.append(completedCompany)
+	return completedCompanies
     
-for i in range(1900, 2015):
-    geocoder(i)
+geocoder()
 
 
 

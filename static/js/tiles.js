@@ -110,7 +110,7 @@ queue()
 			.entries(data); 
 		var min = d3.min(clusteredData, function (d) { return d.values.length }); 
 		var max = d3.max(clusteredData, function (d) { return d.values.length });
-		var gColor = d3.scale.pow().exponent(0.5).domain([min, max]).range(['purple', '#FF624D']); 
+		var gColor = d3.scale.pow().exponent(0.5).domain([min, max]).range(['red', '#FF624D']); 
 	
 		clusteredData.forEach(function (d) {
 			var color = gColor(d.values.length); 
@@ -146,7 +146,7 @@ queue()
 		}
 		//zoomed();
 		drawGraph(dataByMonth); 
-		drawNeighborhoodsGraph();
+		//drawNeighborhoodsGraph();
 		setupHandlers();
 		$('html, body').delay(1000).animate({
 			scrollTop: $('#graphContainer').offset().top,
@@ -192,7 +192,7 @@ function zoomed() {
         var svg = d3.select(this);
         this._xhr = d3.json("http://" + ["a", "b", "c"][(d[0] * 31 + d[1]) % 3] + ".tile.openstreetmap.us/vectiles-highroad/" + d[2] + "/" + d[0] + "/" + d[1] + ".json", function(error, json) {
           var k = Math.pow(2, d[2]) * 256; // size of the world in pixels
-		  console.log('zoom: ', d[2]);
+		 // console.log('zoom: ', d[2]);
           tilePath.projection()
               .translate([k / 2 - d[0] * 256, k / 2 - d[1] * 256]) // [0°,0°] in pixels
               .scale(k / 2 / Math.PI);
@@ -254,23 +254,23 @@ function zoomed() {
 
 	  drawData();
 	  var path = d3.geo.path().projection(projection);
-	  neighborhoodsLayer.selectAll('.neighborhood')
-		  .data(neighborhoodFeatures)
-		  .attr('d', path)
-		  .on('mouseover', function (d) {
-			  var bar = graph.svg.selectAll('.bar')
-			  	.each(function (d2, i) { 
-					if (d.properties[NEIGHBORHOODS_KEY] == d2.key) {
-						d2.text = '<b>' + d2.key + '</b><br/>' + d2.values.length + ' Incidents';
-						graph.tip.show(d2, this);
-						d3.select(this).transition().attr('fill', 'purple');
-					}
-				})
-		  })
-		  .on('mouseout', function (d) {
-			  graph.svg.selectAll('.bar').transition().attr('fill', '#ABABAB');
-			  graph.tip.hide();
-		  });
+//	  neighborhoodsLayer.selectAll('.neighborhood')
+//		  .data(neighborhoodFeatures)
+//		  .attr('d', path)
+//		  .on('mouseover', function (d) {
+//			  var bar = graph.svg.selectAll('.bar')
+//			  	.each(function (d2, i) { 
+//					if (d.properties[NEIGHBORHOODS_KEY] == d2.key) {
+//						d2.text = '<b>' + d2.key + '</b><br/>' + d2.values.length + ' Incidents';
+//						graph.tip.show(d2, this);
+//						d3.select(this).transition().attr('fill', 'red');
+//					}
+//				})
+//		  })
+//		  .on('mouseout', function (d) {
+//			  graph.svg.selectAll('.bar').transition().attr('fill', '#ABABAB');
+//			  graph.tip.hide();
+//		  });
 		  
 	
 	boundaryLayer
@@ -350,8 +350,8 @@ function setupPlayButton() {
 						return '#D6D6D6';
 					})
 					.attr('r', function (d, j) {
-						if (j == i) return 5;
-						return 3; 
+						if (j == i) return 1;
+						return 1; 
 					});
 				i++; 
 				if (i >= dataByMonth.length) {
@@ -413,13 +413,13 @@ function drawGraph(data) {
 	svg.call(tip);
 
 	
-	var minPerMonth = d3.min(data, function (d) { return d.values.length; });
-	var maxPerMonth = d3.max(data, function (d) { return d.values.length; });
-	var labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-	
+	var minPerYear = d3.min(data, function (d) {return d.values.length; });
+	var maxPerYear = d3.max(data, function (d) { return d.values.length; });
+	//var labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+	var labels = [0,1000]
 	// var x = d3.scale.linear().domain([0, 11]).range([0, graphWidth]);
-	console.log(maxPerMonth, minPerMonth)
-	var y = d3.scale.linear().domain([minPerMonth, maxPerMonth]).range([30, 0]);
+	console.log(maxPerYear, minPerYear)
+	var y = d3.scale.linear().domain([minPerYear, maxPerYear]).range([30, 0]);
 	
 	var x = d3.scale.ordinal()
         .domain(labels) 
@@ -446,18 +446,20 @@ function drawGraph(data) {
 		.attr('class', 'line-dot')
 		.attr('cx', line.x())
 		.attr('cy', line.y())
-		.attr('r', 3)
+		.attr('r', function(d){
+			return 1
+		})
 		.attr('fill', '#D6D6D6')
 		.on('mouseover', function (d, i) {
-			d3.select(this).attr('r', 5);
+			d3.select(this).attr('r', 2);
 			d.text = d.values.length + ' Graffiti Cases in ' + labels[i] + ', 2013';
 			tip.show(d);
 		})
 		.on('mouseout', function (d) {
 			d3.selectAll('.line-dot')
 				.attr('r', function (d) {
-					if (d3.select(this).attr('is-clicked') == 'true') return 5;
-					return 3;
+					if (d3.select(this).attr('is-clicked') == 'true') return 1;
+					return 1;
 				})
 			tip.hide();
 		})
@@ -467,7 +469,7 @@ function drawGraph(data) {
 			drawData();
 			updateNeighborhoodsGraph();
 			d3.selectAll('.line-dot').attr('fill', '#D6D6D6').attr('is-clicked', 'false');
-			d3.select(this).attr('r', 5).attr('fill', '#FC6262').attr('is-clicked', 'true');
+			d3.select(this).attr('r', 1).attr('fill', '#FC6262').attr('is-clicked', 'true');
 		});
 
 }

@@ -108,11 +108,11 @@
 		</a>
 		<div class="title-text">
 				<a href="http://youarehere.cc/#/maps/by-city/cambridge" id="mapClass">
-					<h3 class="title" style="font-size: 36px; color:#545454"> Manhattan </h3>
+					<h3 class="title" style="font-size: 36px; color:#545454"> New York City </h3>
 				</a> 
 			
 			<div class="subtitle">
-				This map visualizes one year of graffiti reports in Manhattan, NY
+				This map visualizes the birth and death of companies registered in New York City
 				<a id="showMore" href="#"> ... more </a>
 			</div>
 		</div>
@@ -120,47 +120,33 @@
 </div>
 	<div id="graphContainer">
 	<div class="graph-title">
-		<h4>Over Time</h4>
-		<a id="playButton" href="#"> <i class="fa fa-play"></i> Play Animation </a>
+		<h4>Timeline</h4>
+		<a id="playButton" href="#"> <i class="fa fa-play"></i> Play </a>
 	</div>
-	<a id="showYear" href="#"> Show All Incidents </a>
+	<a id="showYear" href="#"> Show All Companies </a>
 </div>
 <div id="content">
 	<div id="mapContainer">
     <i class="fa fa-spinner fa-spin"></i>
 	</div>
 </div>
-<div id="neighborhoodsGraphContainer">
-	<h4 class="graph-title" style="margin-top: 15px">By Neighborhood</h5>
-</div>
+
 
 	<div id="essayBox">
 	    <div id="essayBox-close" class="glyphicon glyphicon-remove"></div>
 		<div id="essayContent">
-	<blockquote>
-	  <p>"Art should comfort the disturbed and disturb the comfortable."</p>
-	  <footer> Banksy </footer>
-	</blockquote>
                                     
-	<p>This map shows a full year of reported graffiti incidents in the city.</p>
+	<p>This map visualizes the birth and death of companies registered in New York City</p>
 
-	<p>Graffiti is part of the urban fabric of the city. Ranging from simple scribbles to intricate artwork, graffiti is often visible from the public realm and in some places dominates a city's street scenery. While there are hundreds of thousands of reported cases annually, each city presents distinct patterns of distribution of these over time and space.</p>
-
-	<p>This map visualizes the surfaces that tend to be scribbled, sprayed, painted, stenciled, tagged and noticed enough to be reported. It can't tell us the collective stories behind the writings on our city walls but it can portray where people use graffiti as as medium for communication and memory. </p>
-
-	<p>The data visualized in this map is obtained from 311 service requests for graffiti removals reported to the city in 2013. The upper graph shows the number of reported graffiti removal requests each month. Initially, all incidents from 2013 are shown together on the map. To visualize the reported incidents month by month one can click the "Play Animation" button, or click on the circle above the desired month. If a block is reported over 3 or more different months during the year, then the corresponding dots are colored red, denoting frequently graffitied areas. The bar chart below the map shows graffiti counts in each neighborhood in the city.</p>
-
-	<p>The tagging of places suggests a distinct need we have as humans to put our mark on the world.  The reporting of them suggests a separate need of business owners to not have their property painted on.  We might find that addressing this first need will help to address the second.  These maps might suggest places where cities can work to give voices to those without a voice, to create vibrant public spaces for democratized community art, and to explore non-market systems where advertisers don't have a monopoly on street communication.  We believe that seeing street art as a need rather than a nuisance, both for its viewers and its creators, could lead to more beautiful cities and a more empowered populace. </p>
-
-	<p>On the other hand, of course, we recognize that some of it is best to be washed off.</p>   
+	<p></p>   
 	
-	<div class="footnote">The Banksy quote above is an adaptation of the title of a 1997 poem by Cesar Cruz, which itself is an adaptation of a quote by the 19th-century journalist Finley Dunne about the power of newspapers. </div>
+	<div class="footnote">footnote </div>
 	
 </div>
  		<h4> Data Sources </h4>
  		<ol>
- 			<li> Addresses, current status, and coordinates of requests to clean graffiti (other than bridges or highways) received from the public and SCOUT in the last 12 months. New York City Open Data.  <a target="_blank" href="https://data.cityofnewyork.us/Social-Services/Graffiti-Locations/2j99-6h29">https://data.cityofnewyork.us/Social-Services/Graffiti-Locations/2j99-6h29</a></li>
-			<li> New York City Neighborhood Boundaries. New York City Open Data. <a target="_blank" href="https://data.cityofnewyork.us/City-Government/Neighborhood-Tabulation-Areas/cpf4-rkhq">https://data.cityofnewyork.us/City-Government/Neighborhood-Tabulation-Areas/cpf4-rkhq</a></li>
+ 			<li>data 1</li>
+			<li>data 2</li>
  		</ol>
 		<a id="viewMap" href="#" style="margin-top: 40px; display: block;"> View Map</a>
 	</div>
@@ -200,13 +186,13 @@
 
 </div>
 <script>
-var GRAFFITI_DATA_URL = BASE_URL + 'static/data/graffiti/manhattan_N_311_graffiti_2013.csv';
+var GRAFFITI_DATA_URL = BASE_URL + 'data/nyc_companies_nodups.csv';
 var BATCH_SIZE = 1000; 
 var BATCH_INDEX = 0; 
-var ZOOM_LEVEL = (1 << 20) / 1.3; 
+var ZOOM_LEVEL = (1 << 20) / 2; 
 var MAX_ZOOM = ZOOM_LEVEL;
 var CENTER = [-73.968995, 40.785]; 
-var DATA_KEY = "Created Date";
+var DATA_KEY = "birth";
 var NEIGHBORHOOD_LIST_URL = BASE_URL + 'static/data/neighborhoods/manhattan.csv';
 var BOUNDARY_URL = BASE_URL + 'static/data/boundaries/manhattan.geojson';
 var NEIGHBORHOODS_URL = BASE_URL + 'static/data/neighborhoods/manhattan.geojson';
