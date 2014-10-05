@@ -360,7 +360,7 @@ function setupPlayButton() {
 					i = 0; 
 					clearInterval(callId);
 				} 
-			}, 1000);
+			}, 200);
 		});
 }
 
@@ -455,7 +455,7 @@ function drawGraph(data) {
 			console.log(d)
 			return 3
 		})
-		.attr('fill', 'red')
+		.attr('fill', '#000')
 		.on('mouseover', function (d, i) {
 			d3.select(this).attr('r', 3);
 			d.text = d.values.length + ' companies born in ' + d.key;
@@ -528,13 +528,24 @@ function drawArcs(Dict, svg){
 	svg.append("path")
 		.attr("class", "timelineArc")
 		.attr("d", lineFunction(Dict))
-		.attr("stroke", "red")
+		.attr("stroke", "#aaa")
 		.attr("stroke-width", 1)
-		.attr("stroke-opacity", .1)
+		.attr("stroke-opacity", 1)
 		.attr("fill", "none")
 		.attr("stroke-width", function(d,i){return 3})
+		.transition()
+		.duration(10000)
+		.attrTween('d', pathTween);
+		
+	function pathTween() {
+	    var interpolate = d3.scale.quantile()
+	            .domain([0,1])
+	            .range(d3.range(1, Dict.length + 1));
+	    return function(t) {
+	        return lineFunction(Dict.slice(0, interpolate(t)));
+	    };
+	}
 }
-
 
 function countArray(startingYear, arr) {
     var a = [], b = [], prev;
