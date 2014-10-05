@@ -2,7 +2,7 @@ var BOUNDARY_URL =  BASE_URL + 'static/data/boundaries/sf.geojson';
 var ROADS_URL = BASE_URL + 'static/data/roads/sf.json';
 var NEIGHBORHOODS_URL = BASE_URL + 'static/data/sf-neighborhoods.geojson'; 
 var GRAFFITI_DATA_URL = BASE_URL + 'static/data/graffiti/sf_311_graffiti_2013.csv';
-var CIVIC_ART_DATA_URL = BASE_URL + 'static/data/sf-civic-art3.csv'; 
+//var CIVIC_ART_DATA_URL = BASE_URL + 'static/data/sf-civic-art3.csv'; 
 
 var GIS_LOOKUP = 'sf';
 
@@ -38,13 +38,13 @@ window.onload = function () {
 		queue()
 			.defer(d3.json, NEIGHBORHOODS_URL)
 			.defer(d3.csv, GRAFFITI_DATA_URL)
-			.defer(d3.csv, CIVIC_ART_DATA_URL)
+			//.defer(d3.csv, CIVIC_ART_DATA_URL)
 			.await(setup)
 
 	});
 }
 
-function setup(error, neighborhoods, data, art) {
+function setup(error, neighborhoods, data) {
 	console.log(neighborhoods, data, art);
 	
 	data.forEach(function (d) {
@@ -71,7 +71,7 @@ function setup(error, neighborhoods, data, art) {
 			if (isNaN(d.y)) console.log(d, i);
 			return d.y;
 		})
-		.attr('r', 1)
+		.attr('r', 2)
 		.attr('fill', function (d) {
 			var type = d['Request Type'].toLowerCase(); 
 			if (type.indexOf('not_offensive') >= 0) return 'blue';
@@ -91,7 +91,7 @@ function setup(error, neighborhoods, data, art) {
 			return map.projection(geometry.coordinates)[1];
 		})
 		//.attr('r', 5)
-		.style('fill', 'blue')
+//		.style('fill', 'blue')
 		.style('opacity', 1.0)
 		.style('font-weight', 'normal')
 		.text('x');

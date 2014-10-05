@@ -111,7 +111,7 @@ queue()
 			.entries(data); 
 		var min = d3.min(clusteredData, function (d) { return d.values.length }); 
 		var max = d3.max(clusteredData, function (d) { return d.values.length });
-		var gColor = d3.scale.pow().exponent(0.5).domain([min, max]).range(['#aaa', 'red']); 
+		var gColor = d3.scale.pow().exponent(0.5).domain([min, max]).range(['#C6E2FF', '#0276FD']); 
 	
 		clusteredData.forEach(function (d) {
 			var color = gColor(d.values.length); 
@@ -162,7 +162,7 @@ function setupHandlers() {
 			d3.event.preventDefault(); 
 			gData = allData; 
 			drawData();
-			graph.updateData({data: neighborhoodData});
+			//graph.updateData({data: neighborhoodData});
 		});
 }
 function zoomed() {
@@ -392,6 +392,9 @@ function drawCircle(ctx, x, y, r) {
 }
 
 function drawGraph(data) {
+	data.sort()
+	console.log(data)
+	
 	var padding = {left: 200, right: 70, top: 5}; 
 	var graphWidth = width - padding.right - padding.left;
 	var graphHeight = 60 - padding.top;
@@ -437,10 +440,10 @@ function drawGraph(data) {
 		.x(function (d, i) { return x(d.key) })
 		.y(function (d, i) { return y(d.values.length); });
 	
-	svg.append('path')
-		.datum(data)
-		.attr('class', 'line')
-		.attr('d', line);
+//	svg.append('path')
+//		.datum(data)
+//		.attr('class', 'line')
+//		.attr('d', line);
 	
 	svg.selectAll('circle')
 		.data(data)
