@@ -1,0 +1,290 @@
+h1,h2,h3,h4,h5 {
+	font-family: 'EB Garamond', serif;
+	color:#000;
+}
+.title-container{
+	letter-spacing:2px;
+	color:#000;
+}
+.container {
+	background: none;
+	position: relative;
+}
+
+circle.graffiti-incident {
+	/*fill: #196DB1;*/
+	/*fill: #FF6E5E;*/
+	/*fill: white;*/
+	/*fill:#12EFFF;*/
+	opacity: 0.7;
+	pointer-events: none;
+}
+
+.bar:hover {
+	fill: red;
+}
+
+
+.street-label text {
+	font-weight: normal; 
+	stroke: white;
+	stroke-width: 0.1px;
+/*	text-anchor: end;*/
+}
+
+/*text {
+	fill: gray;
+}*/
+
+circle:hover {
+	cursor: pointer;
+}
+
+.hull {
+	stroke-linejoin: round;
+	cursor: pointer;
+}
+#scoreBoard:{
+	position: absolute;
+	
+	top: 200px;
+}
+#mapContainer {
+	height: 450px;
+	position: relative;
+  	overflow: hidden;
+}
+
+#content {
+	position:relative;
+	/*margin-bottom: 10px;*/
+}
+
+#legend {
+	position: absolute;
+	bottom: 10px;
+	right: 0px;
+	padding: 5px;
+/*	border: 1px solid gray;
+*/	z-index: 500;
+	background: white;
+}
+
+
+.neighorhood {
+	cursor: pointer;
+}
+
+
+
+body {
+  margin: 0;
+}
+
+
+.layer {
+  position: absolute;
+}
+
+.tile {
+  position: absolute;
+  width: 256px;
+  height: 256px;
+}
+
+.tile path {
+  fill: none;
+/*  stroke: #000;
+  stroke-linejoin: round;
+  stroke-linecap: round;*/
+}
+
+/*.tile .major_road { stroke: #DBE0DA;  }
+.tile .minor_road { stroke: #F2F2F2; }
+.tile .highway { stroke: #CDCDCD; }
+.tile .rail { stroke: #7de; }*/
+
+
+.tile .major_road { stroke: white;  }
+.tile .minor_road { stroke: white; }
+.tile .highway { stroke: white; }
+.tile .rail { stroke: white; }
+
+
+.street-label text {
+/*	stroke: black;
+	stroke-width: 0.5px;*/
+	font-size: 10px;
+	fill: #F8F8F8;
+/*	fill-opacity: 0.3;*/
+}
+.info {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+}
+
+.line {
+	fill: none;
+	stroke: gray;
+	stroke-dasharray: 2 2;
+}
+
+.line-dot:hover {
+	fill: gray;
+}
+
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #f0f0f0;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font-family: sans-serif;
+    font-size: 10px;
+	fill: gray;
+}
+
+#playButton {
+	font-size: 12px;
+/*	position: absolute;
+	bottom: 10px;
+	left: 60px;*/
+	font-family: 'EB Garamond', serif;
+	color: black;
+}
+
+#playButton i {
+	font-size: 10px;
+	margin-right: 5px;
+}
+
+#neighborhoodsGraphContainer {
+	position: relative;
+	padding-top: 10px;
+	background: rgba(255,255,255,1.0);
+	/*border-top: 1px solid #f0f0f0;*/
+	box-shadow: 0px -3px 1px -2px rgba(240,240,240, 0.7);
+	min-height: 55px;
+}
+
+#graphContainer {
+	margin-top: 10px;
+	padding-top: 5px;
+	/*border-bottom: 1px solid #f0f0f0;*/
+	box-shadow: 0px 3px 1px -2px rgba(240,240,240, 0.7);
+	position: relative;
+	min-height: 70px;
+}
+
+.graph-title {
+	position: absolute;
+	left: 60px;
+	color: #000;
+}
+
+h4 {
+	margin-bottom:5px;
+	margin-top: 5px;
+}
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 8px;
+  background: rgba(240, 240, 240, 0.8);
+  color: #000;
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(240, 240, 240, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -3px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.e:after {
+  margin: -1px 0 0 0;
+  top: 0%;
+  left: 100%;
+}
+
+.d3-tip * {
+	color: #000 !important;
+}
+
+#showYear {
+	width: 50px;
+	position: absolute;
+	right: 5px;
+	top: 0px;
+	font-family: 'EB Garamond', serif;
+	color: black;
+}
+
+#essayBox {
+	background: rgba(255,255,255,1.0);
+	padding-left: 0px;
+	padding-right: 15px;
+	margin-left: 15px;
+	margin-right: 15px;
+	font-size: 15px;
+	height: 695px;
+	overflow-y: scroll;
+}
+
+#essayBox h4 {
+	margin-top: 20px;
+}
+
+blockquote footer:before, blockquote small:before, blockquote .small:before {
+content: '\2014 \00A0';
+}
+
+.footnote {
+	margin-top: 5px;
+	margin-bottom: 5px;
+	font-size: 10px;
+	color: gray;
+}
+
+.neighborhood {
+	stroke-opacity: 0.0;
+	fill: white;
+	fill-opacity: 0.0;
+}
+.neighborhood:hover {
+	stroke: #FF8A8A;
+	stroke-opacity: 0.7;
+	stroke-width: 2;
+	fill-opacity: 0.2;
+}
+
+#mapContainer {
+	position: relative;
+}
+
+#mapContainer .fa-spinner {
+	font-size: 30px;
+	top: 250px;
+	left: 50%;
+	position: absolute;
+}

@@ -1,0 +1,285 @@
+body {
+  font: 10px sans-serif;
+/*			  background: #f0f0f0;*/
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+/*			.bar {
+  fill: steelblue;
+  fill: #0A9DFF;
+}*/
+
+.bar:hover {
+	/*fill: #C2F200;*/
+	fill: gray;
+}
+
+.x.axis path {
+  display: none;
+}
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+
+#leftNav, #rightNav {
+	float: left;
+	padding: 10px;
+}
+
+#leftNav {
+	width: 600px; 
+	height: 100%;
+}
+
+#rightNav {
+	width: 300px;
+	height: 100%;
+}
+
+.container {
+	margin-top: 50px;
+	background: #fff;
+	width: 970px;
+	-webkit-border-radius: 10px;
+}
+
+#hospitalsContainer {
+	height: 0px;
+}
+
+
+.carousel-inner {
+	height: 500px;
+
+}
+
+.vis-link-container {
+	margin-left: 22px;
+	visibility: hidden;
+}
+
+.vis-option-container {
+	margin-top: 20px;
+	vertical-align: center;
+}
+a.vis-link, .vis-option-link {
+	font-family: 'PT Sans', sans-serif;
+	color: #6e6e6e;
+	display: block;
+	font-weight: 100;
+	-webkit-transition: font-weight 500ms, color 500ms;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+}
+
+a.vis-link:hover, a.vis-link:visited, a.vis-link:active {
+	text-decoration: none;
+}
+
+.vis-option-link:hover, .vis-option-link:visited, .vis-option-link:active {
+	text-decoration: none;
+}
+
+a.vis-link:hover, .vis-option-link:hover {
+	text-decoration: none;
+	cursor: pointer;
+	color: #101010;
+	font-weight: bold;
+	-webkit-transition: font-weight 500ms, color 500ms, border-bottom 500ms;
+/*				border-bottom: 2px solid #101010;*/
+}
+
+.right-nav-container {
+	margin-top: 50px;
+	position: relative;
+	min-width: 400px;
+}
+
+h1, h2, h3, h4, h5 {
+	font-family: 'PT Sans', sans-serif;
+}
+
+.vis-title {
+	text-align: center;
+}
+.popover {
+	padding: 0px;
+	border-radius: 0px;
+	width: 180px;
+	/*border: none;*/
+	background: #f0f0f0;
+}
+
+.popover .arrow {
+	color: #f0f0f0;
+	border-bottom-color: #f0f0f0;
+}
+
+.popover .arrow:after {
+	content: " ";
+	top: 1px;
+	margin-left: -10px;
+	border-top-width: 0;
+	border-bottom-color: #f0f0f0 !important;
+}
+.popover-content {
+/*				overflow: auto;*/
+	padding: 0px;
+}
+
+.list-group-item {
+	border-left: none;
+	border-right: none;
+}
+
+.list-group-item:first-child {
+	-webkit-border-radius: 0px;
+	border-radius: 0px;
+	border-top: none;
+}
+
+.list-group-item:last-child {
+	-webkit-border-radius: 0px;
+	border-radius: 0px;
+}
+
+a.vis-option-link {
+	display: inline;
+}
+
+#hospitalList {
+	font-size: 8px;
+	overflow: auto;
+	max-height: 200px; 
+}
+
+.list-group {
+	margin-bottom: 0px;
+}
+
+#svgContainer {
+	min-width: 500px;
+	min-height: 410px;
+}
+
+.vis-key {
+	color: #9e9e9e;
+	margin-top: 150px !important;
+}
+.vis-key-title {
+	color: #6e6e6e;
+	text-transform: uppercase;
+	margin: 5px 0 5px 0;
+}
+
+.vis-key-item:hover {
+	color: #6e6e6e;
+	cursor: pointer;
+	font-weight: bold;
+}
+.hospital-list-close-btn {
+	float: right;
+}
+
+.hospital-list-close-btn:hover {
+	cursor: pointer;
+	color: gray;
+}
+
+#hospitalListBtn {
+	display: block;
+}
+
+#hospitalListBtn table td {
+	padding-right: 10px;
+	text-align: top;
+}
+
+#visTitle {
+	color: #6e6e6e;
+	max-width: 300px;
+}
+#visTitle:hover {
+	cursor: pointer;
+	color: #101010;
+}
+
+#visTitle h3:hover {
+	font-weight: bold;
+}
+
+#histControlRight {
+	position: absolute;
+	right: 110px;
+	bottom: 0px;
+	color: #6e6e6e;
+	display: none;
+	cursor: pointer;
+}
+
+#histControlRight:hover {
+	color: #009DFF;
+}
+
+#histControlLeft {
+	position: absolute;
+	left: 10px;
+	bottom: 0px;
+	color: #6e6e6e;
+	display: none;
+	cursor: pointer;
+}
+#histControlLeft:hover {
+	color: #009DFF;
+}
+
+#showHistBtn {
+	position: absolute;
+	left: 280px;
+	bottom: 2px;
+	color: #6e6e6e;
+
+}
+#showCirclesBtn {
+	position: absolute;
+	left: 310px;
+	bottom: 2px;
+	color: #6e6e6e;
+}
+
+
