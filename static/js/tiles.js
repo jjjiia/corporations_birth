@@ -352,8 +352,8 @@ function setupPlayButton() {
 						return '#D6D6D6';
 					})
 					.attr('r', function (d, j) {
-						if (j == i) return 5;
-						return 3; 
+						if (j == i) return 4;
+						return 2; 
 					});
 				i++; 
 				if (i >= dataByYear.length) {
@@ -393,7 +393,7 @@ function drawCircle(ctx, x, y, r) {
 
 function drawGraph(data) {
 	data.sort()
-	console.log(data)
+	//console.log(data)
 	
 	var padding = {left: 200, right: 70, top: 5}; 
 	var graphWidth = width - padding.right - padding.left;
@@ -421,9 +421,9 @@ function drawGraph(data) {
 	var minPerYear = d3.min(data, function (d) {return d.values.length; });
 	var maxPerYear = d3.max(data, function (d) { return d.values.length; });
 	//var labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-	var labels = [1880,2013]
+	var labels = [1800,2013]
 	// var x = d3.scale.linear().domain([0, 11]).range([0, graphWidth]);
-	console.log(maxPerYear, minPerYear)
+	//console.log(maxPerYear, minPerYear)
 	var y = d3.scale.linear().domain([minPerYear, maxPerYear]).range([30, 0]);
 	var x = d3.scale.linear()
         .domain(labels) 
@@ -471,17 +471,18 @@ function drawGraph(data) {
 			tip.hide();
 		})
 		.on('click', function (d) {
-			d3.selectAll(".timelineArc").remove()
 			
 			gData = d.values; 
 			var currentYear = d.key
 			var currentYearLength = d.values.length
-			//console.log(gData);
-			//make array on click of death years for drawing arcs later
+
+			d3.selectAll(".timelineArc").remove()
 			var deathArray = [];
 			var deathDict = {}
 			var deathYear = null;
 			var companyNameArray = []
+			makeScoreBoardDisplay(d.values)
+			
 			for( var item in d.values){
 				var death = d.values[item].death
 				var companyName = d.values[item].company
@@ -501,11 +502,10 @@ function drawGraph(data) {
 			}
 			//console.log(deathArray)
 			deathDict = countArray(currentYear, deathArray, y(currentYearLength), svg)
-
+			makeScoreBoardDisplay(gData)
 			
 			//drawArcs(deathDict, svg)
 			
-			listCompanies(companyNameArray)
 			
 			drawData();
 			//updateNeighborhoodsGraph();
@@ -514,16 +514,64 @@ function drawGraph(data) {
 		});
 
 }
-function listCompanies(data){
-	//console.log(data)
+function makeScoreBoardDisplay(data)
+{
+	var totalCompanies = data.length
+	var inactiveCount =0
+	var statusReasons = []
+	
+	var inactiveCompanies = []
+	var activeCompanies=[]
+	
+	for( var item in data){
+		var companyStatus = data[item].status
+		var companyName = data[item].company
+		
+		if(companyStatus == "INACTIVE"){
+			inactiveCount +=1
+			var companyReason = data[item].reason
+			statusReasons.push(companyReason)
+			inactiveCompanies.push(companyName)
+		}
+		else{
+			activeCompanies.push(companyName)
+		}
+	}
+	var statusOverview = "active: "+ (totalCompanies-inactiveCount)+ ", inactive: "+inactiveCount
+	var inactiveReasonsOverview = convertArrayToFreqObject(statusReasons)
+	d3.select("#scoreBoard").html(statusOverview + "</br>"+ inactiveReasonsOverview)
+	//d3.select("#scoreBoard").html(statusOverview + "</br>"+ inactiveReasonsOverview+ "</br>ACTIVE:</br>"+activeCompanies+ "</br>INACTIVE:</br>"+inactiveCompanies)
+	//console.log(statusOverview, inactiveReasonsOverview)
+	return statusOverview
+}
+
+
+function convertArrayToFreqObject(arr){
+    var a = [], b = [], prev;
+    var dict = []
+    arr.sort();
+    for ( var i = 0; i < arr.length; i++ ) {
+        if ( arr[i] !== prev ) {
+            a.push(arr[i]);
+            b.push(1);
+        } else {
+            b[b.length-1]++;
+        }
+        prev = arr[i];
+    }
+    
+	for(var j = 0; j<a.length; j++){
+		dict.push("</br>"+a[j]+ " : "+b[j])
+	}
+	return dict
 }
 
 function drawArcs(Dict,svg){
 	//console.log(Dict)
-	var xScale = d3.scale.linear().domain([1880, 2014]).range([0,650])
+	var xScale = d3.scale.linear().domain([1800, 2014]).range([0,650])
 
 	var lineFunction = d3.svg.line()
-		.interpolate("cardinal")
+		.interpolate("basis")
 		.x(function(d) { return xScale(d.x); })
 		.y(function(d,i) { return d.y; })		
 	
@@ -534,9 +582,9 @@ function drawArcs(Dict,svg){
 		.attr("d", lineFunction(Dict))
 		.attr("stroke", "#aaa")
 		.attr("stroke-width", 1)
-		.attr("stroke-opacity", 1)
+		.attr("stroke-opacity", 0.2)
 		.attr("fill", "none")
-		.attr("stroke-width", function(d,i){return 1})
+		.attr("stroke-width", function(d,i){return 2})
 		
 		var length = curve.node().getTotalLength();
 		
@@ -564,9 +612,13 @@ function countArray(startingYear, arr, yOrigin,svg) {
 	for(var j = 0; j<a.length; j++){
 		
 		var dict = []
+		
 		dict.push({"x":startingYear, "y":yOrigin})
+		dict.push({"x":startingYear, "y":10})
+		dict.push({"x":a[j], "y":20})
+		
 		dict.push({"x":a[j], "y":30})
-		console.log(dict)
+		//console.log(dict)
 		
 		drawArcs(dict, svg)
 	}

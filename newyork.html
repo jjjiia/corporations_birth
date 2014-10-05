@@ -2,7 +2,7 @@
 <!Doctype HTML>
 <html>
 	<head>
-		<title> Graffiti in Manhattan, New York </title>
+		<title> Test New York </title>
 		<!---   Styles   -->
 		<link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
 		<link href="static/bootstrap-select/bootstrap-select.css" rel="stylesheet"/>
@@ -12,7 +12,7 @@
 		
 <link rel="stylesheet" href="static/css/histograms.css" />
 <link href='http://fonts.googleapis.com/css?family=EB+Garamond' rel='stylesheet' type='text/css'/>
-<link href="static/css/graffiti.css" rel='stylesheet' type='text/css'/>
+<link href="static/css/corporateBirth.css" rel='stylesheet' type='text/css'/>
 
 		<!---   Scripts    -->
 		<script src="static/libs/d3.v3.min.js"></script>
@@ -100,15 +100,16 @@
 
 	</head>
 	<body>
-		
+	
 <div class="container">
+
 	<div class="title-container">
 		<a id="logo" href="http://youarehere.cc">
 			<img src="static/img/logo.jpg" style="width: 50px">
 		</a>
 		<div class="title-text">
 				<a href="http://youarehere.cc/#/maps/by-city/cambridge" id="mapClass">
-					<h3 class="title" style="font-size: 36px; color:#545454"> New York City </h3>
+					<h3 class="title" style="font-size: 36px; color:#000"> New York City </h3>
 				</a> 
 			
 			<div class="subtitle">
@@ -119,6 +120,11 @@
 		<div class="spacer"></div>
 </div>
 
+<div id = "scoreBoard">
+	Birth</br>
+	Death
+</div>
+
 <div id="content">
 	<div id="mapContainer">
     <i class="fa fa-spinner fa-spin"></i>
@@ -127,7 +133,7 @@
 
 <div id="graphContainer">
 	<div class="graph-title">
-		<h4>Timeline</h4>
+		<h4>By Year</h4>
 		<a id="playButton" href="#"> <i class="fa fa-play"></i> Play </a>
 	</div>
 	<a id="showYear" href="#"> TODO: Show All: Birth</br>Death</br>Cummulative </a>	
@@ -188,7 +194,7 @@
 
 </div>
 <script>
-var GRAFFITI_DATA_URL = BASE_URL + 'data/nyc_companies_nodups.csv';
+var GRAFFITI_DATA_URL = BASE_URL + 'static/data/nyc_companies_nodups.csv';
 var BATCH_SIZE = 100; 
 var BATCH_INDEX = 0; 
 var ZOOM_LEVEL = (1 << 20) / 3.1; 
