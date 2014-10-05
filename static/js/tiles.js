@@ -452,7 +452,7 @@ function drawGraph(data) {
 		.attr('cx', line.x())
 		.attr('cy', line.y())
 		.attr('r', function(d){
-			console.log(d)
+			//console.log(d)
 			return 3
 		})
 		.attr('fill', '#000')
@@ -471,8 +471,11 @@ function drawGraph(data) {
 			tip.hide();
 		})
 		.on('click', function (d) {
+			d3.selectAll(".timelineArc").remove()
+			
 			gData = d.values; 
 			var currentYear = d.key
+			var currentYearLength = d.values.length
 			//console.log(gData);
 			//make array on click of death years for drawing arcs later
 			var deathArray = [];
@@ -497,10 +500,10 @@ function drawGraph(data) {
 				}
 			}
 			//console.log(deathArray)
-			deathDict = countArray(currentYear , deathArray)
+			deathDict = countArray(currentYear, deathArray, y(currentYearLength), svg)
 
 			
-			drawArcs(deathDict, svg)
+			//drawArcs(deathDict, svg)
 			
 			listCompanies(companyNameArray)
 			
@@ -512,42 +515,39 @@ function drawGraph(data) {
 
 }
 function listCompanies(data){
-	console.log(data)
+	//console.log(data)
 }
 
-function drawArcs(Dict, svg){
-	console.log(Dict)
-	d3.selectAll(".timelineArc").remove()
+function drawArcs(Dict,svg){
+	//console.log(Dict)
 	var xScale = d3.scale.linear().domain([1880, 2014]).range([0,650])
 
 	var lineFunction = d3.svg.line()
+		.interpolate("cardinal")
 		.x(function(d) { return xScale(d.x); })
-		.y(function(d,i) { return i*2; })		
-		.interpolate("cardinal");
+		.y(function(d,i) { return d.y; })		
 	
-	svg.append("path")
+		
+	
+	var curve = svg.append("path")
 		.attr("class", "timelineArc")
 		.attr("d", lineFunction(Dict))
 		.attr("stroke", "#aaa")
 		.attr("stroke-width", 1)
 		.attr("stroke-opacity", 1)
 		.attr("fill", "none")
-		.attr("stroke-width", function(d,i){return 3})
-		.transition()
-		.duration(10000)
-		.attrTween('d', pathTween);
+		.attr("stroke-width", function(d,i){return 1})
 		
-	function pathTween() {
-	    var interpolate = d3.scale.quantile()
-	            .domain([0,1])
-	            .range(d3.range(1, Dict.length + 1));
-	    return function(t) {
-	        return lineFunction(Dict.slice(0, interpolate(t)));
-	    };
-	}
+		var length = curve.node().getTotalLength();
+		
+		curve.attr("stroke-dasharray", length+" "+length)
+		.attr("stroke-dashoffset", length)
+		     .transition()
+		       .duration(1250)
+		       .attr("stroke-dashoffset", 0);
 }
 
-function countArray(startingYear, arr) {
+function countArray(startingYear, arr, yOrigin,svg) {
     var a = [], b = [], prev;
     var dict = []
     arr.sort();
@@ -562,8 +562,13 @@ function countArray(startingYear, arr) {
     }
     
 	for(var j = 0; j<a.length; j++){
-		dict.push({"x":startingYear, "y":0})
-		dict.push({"x":a[j], "y":b[j]})
+		
+		var dict = []
+		dict.push({"x":startingYear, "y":yOrigin})
+		dict.push({"x":a[j], "y":30})
+		console.log(dict)
+		
+		drawArcs(dict, svg)
 	}
 	return dict
    // return [a, b];

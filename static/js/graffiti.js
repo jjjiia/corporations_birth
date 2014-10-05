@@ -1,10 +1,10 @@
-var BOUNDARY_URL =  BASE_URL + 'static/data/boundaries/sf.geojson'; 
-var ROADS_URL = BASE_URL + 'static/data/roads/sf.json';
-var NEIGHBORHOODS_URL = BASE_URL + 'static/data/sf-neighborhoods.geojson'; 
-var GRAFFITI_DATA_URL = BASE_URL + 'static/data/graffiti/sf_311_graffiti_2013.csv';
+//var BOUNDARY_URL =  BASE_URL + 'static/data/boundaries/sf.geojson'; 
+//var ROADS_URL = BASE_URL + 'static/data/roads/sf.json';
+//var NEIGHBORHOODS_URL = BASE_URL + 'static/data/sf-neighborhoods.geojson'; 
+//var GRAFFITI_DATA_URL = BASE_URL + 'static/data/graffiti/sf_311_graffiti_2013.csv';
 //var CIVIC_ART_DATA_URL = BASE_URL + 'static/data/sf-civic-art3.csv'; 
 
-var GIS_LOOKUP = 'sf';
+//var GIS_LOOKUP = 'sf';
 
 var WIDTH = 1000; 
 var HEIGHT = 600;
