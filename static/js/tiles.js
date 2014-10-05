@@ -105,12 +105,13 @@ queue()
 	
 		clusteredData = d3.nest()
 			.key(function (d) {
+				//console.log(d.birth, d.death)
 				return d.cstring; 
 			})
 			.entries(data); 
 		var min = d3.min(clusteredData, function (d) { return d.values.length }); 
 		var max = d3.max(clusteredData, function (d) { return d.values.length });
-		var gColor = d3.scale.pow().exponent(0.5).domain([min, max]).range(['red', '#FF624D']); 
+		var gColor = d3.scale.pow().exponent(0.5).domain([min, max]).range(['#aaa', 'red']); 
 	
 		clusteredData.forEach(function (d) {
 			var color = gColor(d.values.length); 
@@ -118,11 +119,12 @@ queue()
 				d2.fill = color; 
 			});
 		})
-		console.log(clusteredData);
+		//console.log(clusteredData);
 	
-		dataByMonth = d3.nest()
+		dataByYear = d3.nest()
 			.key(function (d) {
-				return (new Date(d[DATA_KEY])).getMonth();
+				//console.log(new Date(d[DATA_KEY]).getFullYear())
+				return (new Date(d[DATA_KEY]).getFullYear());
 			})
 			.entries(data);
 	
@@ -145,7 +147,7 @@ queue()
 			zoomed();
 		}
 		//zoomed();
-		drawGraph(dataByMonth); 
+		drawGraph(dataByYear); 
 		//drawNeighborhoodsGraph();
 		setupHandlers();
 		$('html, body').delay(1000).animate({
@@ -219,7 +221,7 @@ function zoomed() {
 				
 	            all.exit().remove();
 			
-				console.log(all.enter())
+				//console.log(all.enter())
 				all.enter().append('g');
 				all
 					.attr('class', 'street-label')
@@ -321,7 +323,7 @@ function drawDataAtBatch() {
 		ctx.fillStyle = d.fill;
 		ctx.globalAlpha = 0.2;
 		if (currentHoverNeighbor != null) {
-			console.log(currentHoverNeighbor, d.neighborhood);
+			//console.log(currentHoverNeighbor, d.neighborhood);
 			if (currentHoverNeighbor != d.neighborhood) {
 				ctx.globalAlpha = 0.1;
 				ctx.fillStyle = '#d0d0d0';
@@ -340,9 +342,9 @@ function setupPlayButton() {
 		.on('click', function () {
 			d3.event.preventDefault();
 			var callId = setInterval(function () {
-				gData = dataByMonth[i].values; 
+				gData = dataByYear[i].values; 
 				drawData();
-				updateNeighborhoodsGraph();
+				//updateNeighborhoodsGraph();
 				graphSvg.selectAll('.line-dot')
 					.transition()
 					.attr('fill', function (d, j) {
@@ -350,15 +352,15 @@ function setupPlayButton() {
 						return '#D6D6D6';
 					})
 					.attr('r', function (d, j) {
-						if (j == i) return 1;
-						return 1; 
+						if (j == i) return 5;
+						return 3; 
 					});
 				i++; 
-				if (i >= dataByMonth.length) {
+				if (i >= dataByYear.length) {
 					i = 0; 
 					clearInterval(callId);
 				} 
-			}, 1200);
+			}, 1000);
 		});
 }
 
@@ -416,14 +418,14 @@ function drawGraph(data) {
 	var minPerYear = d3.min(data, function (d) {return d.values.length; });
 	var maxPerYear = d3.max(data, function (d) { return d.values.length; });
 	//var labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-	var labels = [0,1000]
+	var labels = [1880,2013]
 	// var x = d3.scale.linear().domain([0, 11]).range([0, graphWidth]);
 	console.log(maxPerYear, minPerYear)
 	var y = d3.scale.linear().domain([minPerYear, maxPerYear]).range([30, 0]);
-	
-	var x = d3.scale.ordinal()
+	var x = d3.scale.linear()
         .domain(labels) 
-		.rangeRoundBands([0, graphWidth], 0.05);
+		.range([0,650])
+		//.rangeRoundBands([0, graphWidth], 0.05);
 	var xAxis = d3.svg.axis().scale(x);
 	
 	svg.append('g')
@@ -432,7 +434,7 @@ function drawGraph(data) {
 		.call(xAxis);
 	
 	var line = d3.svg.line()
-		.x(function (d, i) { return x(labels[i]) + x.rangeBand()/2.0 })
+		.x(function (d, i) { return x(d.key) })
 		.y(function (d, i) { return y(d.values.length); });
 	
 	svg.append('path')
@@ -447,88 +449,167 @@ function drawGraph(data) {
 		.attr('cx', line.x())
 		.attr('cy', line.y())
 		.attr('r', function(d){
-			return 1
+			console.log(d)
+			return 3
 		})
-		.attr('fill', '#D6D6D6')
+		.attr('fill', 'red')
 		.on('mouseover', function (d, i) {
-			d3.select(this).attr('r', 2);
-			d.text = d.values.length + ' Graffiti Cases in ' + labels[i] + ', 2013';
+			d3.select(this).attr('r', 3);
+			d.text = d.values.length + ' companies born in ' + d.key;
+			//console.log(d)
 			tip.show(d);
 		})
 		.on('mouseout', function (d) {
 			d3.selectAll('.line-dot')
 				.attr('r', function (d) {
 					if (d3.select(this).attr('is-clicked') == 'true') return 1;
-					return 1;
+					return 3;
 				})
 			tip.hide();
 		})
 		.on('click', function (d) {
 			gData = d.values; 
-			console.log(gData);
+			var currentYear = d.key
+			//console.log(gData);
+			//make array on click of death years for drawing arcs later
+			var deathArray = [];
+			var deathDict = {}
+			var deathYear = null;
+			var companyNameArray = []
+			for( var item in d.values){
+				var death = d.values[item].death
+				var companyName = d.values[item].company
+				var companyBirth = d.values[item].birth
+				var companyDeath = d.values[item].death
+				if(companyDeath == "NA"){
+					companyDeath = "Present"
+				}
+				companyNameArray.push([companyName, companyBirth, companyDeath])
+				//console.log(death)
+				if(death == "NA"){
+					deathArray.push(2020)		
+				}else{
+					deathYear = new Date(death).getFullYear();
+					deathArray.push(deathYear)
+				}
+			}
+			//console.log(deathArray)
+			deathDict = countArray(currentYear , deathArray)
+
+			
+			drawArcs(deathDict, svg)
+			
+			listCompanies(companyNameArray)
+			
 			drawData();
-			updateNeighborhoodsGraph();
+			//updateNeighborhoodsGraph();
 			d3.selectAll('.line-dot').attr('fill', '#D6D6D6').attr('is-clicked', 'false');
-			d3.select(this).attr('r', 1).attr('fill', '#FC6262').attr('is-clicked', 'true');
+			d3.select(this).attr('r', 3).attr('fill', '#FC6262').attr('is-clicked', 'true');
 		});
 
 }
-
-function drawNeighborhoodsGraph() {
-	var data = d3.nest()
-		.key(function(d) { return d.neighborhood})
-		.entries(gData)
-		.sort(function (a, b) {
-			return d3.descending(a.values.length, b.values.length);
-		});
-	neighborhoodData = data; 
-	neighborhoodList = data.map(function (d, i) { return d.key; });
-	
-	
-	console.log(data);
-	var chartOptions = {
-		margin: {top: 5, left: 200, right: 70, bottom: 0}, 
-		width: width, 
-		height: 50,
-		data: data,
-		svgContainer: '#neighborhoodsGraphContainer', 
-		xValue: function (d) { return d.key }, 
-		yValue: function (d) { return d.values.length; },
-		colorfn: '#ABABAB',
-		showTip: true,
-		mouseover: function (d, i) {
-			d.text = '<b>' + d.key + '</b><br/>' + d.values.length + ' Incidents';
-			currentHoverNeighbor = d.key; 
-			drawData();
-		}, 
-		mouseout: function (d, i) {
-			currentHoverNeighbor = null;
-			drawData();
-		}
-	};
-	graph = new SimpleBarChart(chartOptions); 
-	graph.initialize();
+function listCompanies(data){
+	console.log(data)
 }
 
-function updateNeighborhoodsGraph() {
-	// var data = d3.nest()
-	// 	.key(function(d) { return d.neighborhood})
-	// 	.entries(gData)
-	// 	.sort(function (a, b) {
-	// 		return d3.descending(a.values.length, b.values.length);
-	// 	});
-	var n2data = d3.map(); 
-	neighborhoodList.forEach(function (d, i) {n2data.set(d, [])}); 
-	for (var i = 0; i < gData.length; i++) {
-		var d = gData[i];
-		n2data.get(d.neighborhood).push(d); 
+function drawArcs(Dict, svg){
+	console.log(Dict)
+	d3.selectAll(".timelineArc").remove()
+	var xScale = d3.scale.linear().domain([1880, 2014]).range([0,650])
+
+	var lineFunction = d3.svg.line()
+		.x(function(d) { return xScale(d.x); })
+		.y(function(d,i) { return i*2; })		
+		.interpolate("cardinal");
+	
+	svg.append("path")
+		.attr("class", "timelineArc")
+		.attr("d", lineFunction(Dict))
+		.attr("stroke", "red")
+		.attr("stroke-width", 1)
+		.attr("stroke-opacity", .1)
+		.attr("fill", "none")
+		.attr("stroke-width", function(d,i){return 3})
+}
+
+
+function countArray(startingYear, arr) {
+    var a = [], b = [], prev;
+    var dict = []
+    arr.sort();
+    for ( var i = 0; i < arr.length; i++ ) {
+        if ( arr[i] !== prev ) {
+            a.push(arr[i]);
+            b.push(1);
+        } else {
+            b[b.length-1]++;
+        }
+        prev = arr[i];
+    }
+    
+	for(var j = 0; j<a.length; j++){
+		dict.push({"x":startingYear, "y":0})
+		dict.push({"x":a[j], "y":b[j]})
 	}
-	var data = neighborhoodList.map(function (name, i) {
-		return {'key': name, 'values': n2data.get(name)}; 
-	})
-	graph.updateData({data: data});
+	return dict
+   // return [a, b];
 }
 
+//function drawNeighborhoodsGraph() {
+//	var data = d3.nest()
+//		.key(function(d) { return d.neighborhood})
+//		.entries(gData)
+//		.sort(function (a, b) {
+//			return d3.descending(a.values.length, b.values.length);
+//		});
+//	neighborhoodData = data; 
+//	neighborhoodList = data.map(function (d, i) { return d.key; });
+//	
+//	
+//	//console.log(data);
+//	var chartOptions = {
+//		margin: {top: 5, left: 200, right: 70, bottom: 0}, 
+//		width: width, 
+//		height: 50,
+//		data: data,
+//		svgContainer: '#neighborhoodsGraphContainer', 
+//		xValue: function (d) { return d.key }, 
+//		yValue: function (d) { return d.values.length; },
+//		colorfn: '#ABABAB',
+//		showTip: true,
+//		mouseover: function (d, i) {
+//			d.text = '<b>' + d.key + '</b><br/>' + d.values.length + ' Incidents';
+//			currentHoverNeighbor = d.key; 
+//			drawData();
+//		}, 
+//		mouseout: function (d, i) {
+//			currentHoverNeighbor = null;
+//			drawData();
+//		}
+//	};
+//	graph = new SimpleBarChart(chartOptions); 
+//	graph.initialize();
+//}
+
+//function updateNeighborhoodsGraph() {
+//	// var data = d3.nest()
+//	// 	.key(function(d) { return d.neighborhood})
+//	// 	.entries(gData)
+//	// 	.sort(function (a, b) {
+//	// 		return d3.descending(a.values.length, b.values.length);
+//	// 	});
+//	var n2data = d3.map(); 
+//	neighborhoodList.forEach(function (d, i) {n2data.set(d, [])}); 
+//	for (var i = 0; i < gData.length; i++) {
+//		var d = gData[i];
+//		n2data.get(d.neighborhood).push(d); 
+//	}
+//	var data = neighborhoodList.map(function (name, i) {
+//		return {'key': name, 'values': n2data.get(name)}; 
+//	})
+//	graph.updateData({data: data});
+//}
+//
 var essayBoxShown = false;
 function setupLightBox() {
 	$('#showMore').click(function(e){

@@ -118,17 +118,19 @@
 		</div>
 		<div class="spacer"></div>
 </div>
-	<div id="graphContainer">
-	<div class="graph-title">
-		<h4>Timeline</h4>
-		<a id="playButton" href="#"> <i class="fa fa-play"></i> Play </a>
-	</div>
-	<a id="showYear" href="#"> Show All Companies </a>
-</div>
+
 <div id="content">
 	<div id="mapContainer">
     <i class="fa fa-spinner fa-spin"></i>
 	</div>
+</div>
+
+<div id="graphContainer">
+	<div class="graph-title">
+		<h4>Timeline</h4>
+		<a id="playButton" href="#"> <i class="fa fa-play"></i> Play </a>
+	</div>
+	<a id="showYear" href="#"> TODO: Show All: Birth</br>Death</br>Cummulative </a>	
 </div>
 
 
@@ -187,7 +189,7 @@
 </div>
 <script>
 var GRAFFITI_DATA_URL = BASE_URL + 'data/nyc_companies_nodups.csv';
-var BATCH_SIZE = 1000; 
+var BATCH_SIZE = 100; 
 var BATCH_INDEX = 0; 
 var ZOOM_LEVEL = (1 << 20) / 2; 
 var MAX_ZOOM = ZOOM_LEVEL;
