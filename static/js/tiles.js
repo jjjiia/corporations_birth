@@ -121,13 +121,19 @@ queue()
 		})
 		//console.log(clusteredData);
 	
-		dataByYear = d3.nest()
+		birthDataByYear = d3.nest()
 			.key(function (d) {
 				//console.log(new Date(d[DATA_KEY]).getFullYear())
-				return (new Date(d[DATA_KEY]).getFullYear());
+				return (new Date(d["birth"]).getFullYear());
 			})
 			.entries(data);
-	
+			
+		deathDataByYear = d3.nest()
+			.key(function (d) {
+				//console.log(new Date(d[DATA_KEY]).getFullYear())
+				return (new Date(d["death"]).getFullYear());
+			})
+			.entries(data);
 
 		boundaryFeature = boundary;
 		boundaryLayer
@@ -147,7 +153,9 @@ queue()
 			zoomed();
 		}
 		//zoomed();
-		drawGraph(dataByYear); 
+		drawGraph(birthDataByYear); 		
+		//drawGraph(deathDataByYear); 
+
 		//drawNeighborhoodsGraph();
 		setupHandlers();
 		$('html, body').delay(1000).animate({
@@ -342,7 +350,7 @@ function setupPlayButton() {
 		.on('click', function () {
 			d3.event.preventDefault();
 			var callId = setInterval(function () {
-				gData = dataByYear[i].values; 
+				gData = birthDataByYear[i].values; 
 				drawData();
 				//updateNeighborhoodsGraph();
 				graphSvg.selectAll('.line-dot')
@@ -356,7 +364,7 @@ function setupPlayButton() {
 						return 2; 
 					});
 				i++; 
-				if (i >= dataByYear.length) {
+				if (i >= birthDataByYear.length) {
 					i = 0; 
 					clearInterval(callId);
 				} 
@@ -392,8 +400,11 @@ function drawCircle(ctx, x, y, r) {
 }
 
 function drawGraph(data) {
-	data.sort()
-	//console.log(data)
+	var sorted = data.sort(
+		function(a,b){
+			return a.key - b.key
+		})
+	console.log(sorted)
 	
 	var padding = {left: 200, right: 70, top: 5}; 
 	var graphWidth = width - padding.right - padding.left;
@@ -614,8 +625,8 @@ function countArray(startingYear, arr, yOrigin,svg) {
 		var dict = []
 		
 		dict.push({"x":startingYear, "y":yOrigin})
-		dict.push({"x":startingYear, "y":10})
-		dict.push({"x":a[j], "y":20})
+		dict.push({"x":parseInt(startingYear)+20, "y":-10})
+		dict.push({"x":a[j], "y":0})
 		
 		dict.push({"x":a[j], "y":30})
 		//console.log(dict)
